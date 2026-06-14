@@ -2,7 +2,19 @@
   "skills": {
     "debug": {
       "file": "skills/debug.md",
-      "description": "Structured debugging workflow — no guessing, hypothesis-driven, root cause focused"
+      "description": "Hypothesis-driven debugging — build a feedback loop, find root cause, verify the fix"
+    },
+    "zoom-out": {
+      "file": "skills/zoom-out.md",
+      "description": "Go up a layer of abstraction — map relevant modules and callers when you're lost in code"
+    },
+    "grill-me": {
+      "file": "skills/grill-me.md",
+      "description": "Stress-test a plan or spec — relentless one-at-a-time interview with recommended answers"
+    },
+    "token-efficiency": {
+      "file": "skills/token-efficiency.md",
+      "description": "Ultra-compressed responses — cut ~75% of tokens, keep full technical accuracy"
     }
   }
 }
