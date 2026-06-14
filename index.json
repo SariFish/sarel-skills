@@ -1,0 +1,8 @@
+{
+  "skills": {
+    "debug": {
+      "file": "skills/debug.md",
+      "description": "Structured debugging workflow — no guessing, hypothesis-driven, root cause focused"
+    }
+  }
+}
