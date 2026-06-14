@@ -18,10 +18,20 @@ token-efficiency  (always on, from message #1)
         └──────────►  zoom-out (when iterations pile up / code area unfamiliar)
 ```
 
+## Model tiers
+
+These are capability tiers, not specific models — map them to whatever provider you use (Claude, GPT, Gemini, …). Pick the smallest tier that does the job, and tell the user which tier the upcoming stage wants.
+
+- **Deep** — top-tier reasoning model with extended thinking. For high-stakes synthesis and multi-step reasoning where mistakes compound.
+- **Balanced** — capable general-purpose model. The default for most coding.
+- **Light** — fast, cheaper model. For mechanical or style-only work.
+
 ## Stages
 
 ### Stage 1 — Token efficiency (always on)
 Apply the **token-efficiency** skill from your very first response and keep it active for the entire workflow. Every stage below is communicated in compressed form. Only turn it off if the user says so.
+
+> **Suggested model: Light.** It has no reasoning of its own — it's a style layer over whatever the active stage runs. Bonus: by trimming output it stretches lighter models further.
 
 ### Stage 2 — Understand (grill-me)
 Apply the **grill-me** skill. Interview the user one question at a time, recommending an answer for each, walking down every branch of the decision tree until you reach shared understanding.
@@ -30,20 +40,29 @@ Then **write that understanding to a file** — a product spec, technical spec, 
 
 Do not start development until this file exists and the user agrees with it.
 
+> **Suggested model: Deep.** Spec quality compounds through the whole project. You want the model that reasons about trade-offs, dependencies between decisions, and edge cases the user hasn't thought of. Remind the user before grilling.
+
 ### Stage 3 — Develop
 No skill. Build against the spec file. Keep referring back to it; if reality diverges from the spec, update the file rather than letting it drift.
+
+> **Suggested model: Balanced** for routine implementation; step up to **Deep** for architecturally complex or unfamiliar work.
 
 ### Stage 4 — Debug
 When something breaks, fails, throws, or regresses, switch to the **debug** skill. Follow its phased feedback-loop workflow and its required response format. Return to development once the fix is verified.
 
+> **Suggested model: Deep.** Designing a feedback loop and generating ranked, falsifiable hypotheses rewards strong reasoning. Drop to Balanced only for shallow, obvious bugs.
+
 ### Stage 5 — Zoom out (when stuck)
 Trigger: the conversation churns through many iterations without progress, or you or the user are unfamiliar with the relevant code area. When you notice this, **proactively suggest** the **zoom-out** skill — don't wait to be asked. Apply it to get a higher-level map of the modules and callers in the project's own vocabulary, then resume the stage you were in.
 
+> **Suggested model: Balanced.** It's breadth-and-synthesis work — mapping modules and callers — more than deep multi-step reasoning.
+
 ## Skills
 
-| Stage | Skill | URL |
-|-------|-------|-----|
-| 1 | token-efficiency | https://raw.githubusercontent.com/SariFish/sarel-skills/main/skills/token-efficiency.md |
-| 2 | grill-me | https://raw.githubusercontent.com/SariFish/sarel-skills/main/skills/grill-me.md |
-| 4 | debug | https://raw.githubusercontent.com/SariFish/sarel-skills/main/skills/debug.md |
-| 5 | zoom-out | https://raw.githubusercontent.com/SariFish/sarel-skills/main/skills/zoom-out.md |
+| Stage | Skill | Model | URL |
+|-------|-------|-------|-----|
+| 1 | token-efficiency | Light | https://raw.githubusercontent.com/SariFish/sarel-skills/main/skills/token-efficiency.md |
+| 2 | grill-me | Deep | https://raw.githubusercontent.com/SariFish/sarel-skills/main/skills/grill-me.md |
+| 3 | develop | Balanced (→ Deep) | *(no skill)* |
+| 4 | debug | Deep | https://raw.githubusercontent.com/SariFish/sarel-skills/main/skills/debug.md |
+| 5 | zoom-out | Balanced | https://raw.githubusercontent.com/SariFish/sarel-skills/main/skills/zoom-out.md |
