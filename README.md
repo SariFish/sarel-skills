@@ -6,6 +6,7 @@ A collection of AI behavior rules. Model-agnostic — works with Claude, GPT, Ge
 
 | Skill | Description |
 |-------|-------------|
+| [workflow](skills/workflow.md) | Orchestrator — leads the user from idea to working code, switching skills per stage |
 | [debug](skills/debug.md) | Hypothesis-driven debugging — build a feedback loop, find root cause, verify the fix |
 | [zoom-out](skills/zoom-out.md) | Go up a layer of abstraction — map relevant modules and callers when you're lost in code |
 | [grill-me](skills/grill-me.md) | Stress-test a plan or spec — relentless one-at-a-time interview with recommended answers |

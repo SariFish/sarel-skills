@@ -1,5 +1,9 @@
 {
   "skills": {
+    "workflow": {
+      "file": "skills/workflow.md",
+      "description": "Orchestrator — leads the user from idea to working code, switching skills per stage"
+    },
     "debug": {
       "file": "skills/debug.md",
       "description": "Hypothesis-driven debugging — build a feedback loop, find root cause, verify the fix"
