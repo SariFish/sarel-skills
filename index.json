@@ -19,6 +19,10 @@
     "token-efficiency": {
       "file": "skills/token-efficiency.md",
       "description": "Ultra-compressed responses — cut ~75% of tokens, keep full technical accuracy"
+    },
+    "world-cup-projection": {
+      "file": "skills/world-cup-projection.md",
+      "description": "Develop, debug, and extend the 2026 World Cup projection model (Dixon-Coles + ELO)"
     }
   }
 }
