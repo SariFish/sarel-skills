@@ -6,7 +6,7 @@ Rules for developing, debugging, and extending the [world-cup-model](https://git
 
 ## Model Mental Model
 
-The stack is: **FIFA ratings → Dixon-Coles MLE → score matrix → outcome probabilities**.
+The stack is: **FIFA ratings → Dixon-Coles MLE → score matrix → outcome probabilities → Monte Carlo bracket**.
 
 | Layer | File | What can go wrong |
 |-------|------|-------------------|
@@ -15,20 +15,27 @@ The stack is: **FIFA ratings → Dixon-Coles MLE → score matrix → outcome pr
 | Model fit | `src/dixon_coles.py` | Optimiser non-convergence; identifiability |
 | Projection | `src/projections.py` | Score matrix not summing to 1; rho out of range |
 | ELO fallback | `src/elo.py` | Draw probability formula mis-calibrated |
+| Tournament | `src/knockout_sim.py` | Bracket pairing; same-group rematch; sampling bias |
 
 ---
 
 ## Updating Scores
 
 ```bash
-python data/fetch_data.py [--api-key YOUR_KEY]
+python data/fetch_data.py --api-key YOUR_KEY
 python run_projections.py
 ```
 
-If `fetch_data.py` returns no matches, check:
-1. API key valid? (free key at football-data.org)
-2. Competition code correct? May need to update `COMPETITION` constant in `fetch_data.py`.
-3. Team name mismatch? Add entries to `api_name_to_csv_name()` in `fetch_data.py`.
+The key is sent in the `X-Auth-Token` header. The fetcher self-throttles on the
+`X-Requests-Available-Minute` header and retries once on HTTP 429.
+
+If `fetch_data.py` returns no matches, check the diagnostic it prints:
+1. **`blocked by network egress policy`** — the host `api.football-data.org` is not on
+   this environment's allowlist. Add it in the environment's egress settings, or run
+   the fetcher on a machine with open network and commit the updated CSV.
+2. **`403 — check your API key`** — key invalid or unverified at football-data.org.
+3. **`404 — competition not found`** — re-run with `--competition <CODE>`.
+4. **Team name mismatch** — add entries to `api_name_to_csv_name()` in `fetch_data.py`.
 
 ---
 
@@ -61,11 +68,17 @@ python -m src.dixon_coles   # runs _test_fit() on synthetic data
 1. Fetch data into `data/fixtures_2026.csv` format (same columns).
 2. `data_loader.py` reads whatever is in the CSV — no other changes needed.
 
-### Add knockout-round simulation
-1. After group stage, determine qualified teams (top 2 per group + best 8 third-place).
-2. Run Monte Carlo simulation: for each bracket match, sample a score from the fitted score matrix.
-3. Aggregate over N=10000 simulations to get P(team reaches QF/SF/Final/wins).
-4. Add `src/knockout_sim.py` and wire it into `run_projections.py --tournament`.
+### Knockout-round simulation (IMPLEMENTED)
+`src/knockout_sim.py` + `run_projections.py --tournament`:
+1. Fixes already-played group results, simulates the remaining group games.
+2. Ranks each group (points → GD → GF); takes top 2 + 8 best third-placed teams.
+3. Builds a strength-seeded Round of 32 that avoids same-group rematches.
+4. Plays the bracket, sampling scorelines from the fitted model (shootout = 50/50 on draws).
+5. Aggregates over N sims → P(reach R16/QF/SF/Final/Win).
+
+Known simplification: the exact official 2026 bracket slotting (which group each
+best-third feeds into) is approximated by a seeded pairing. Refine `build_round_of_32()`
+once the official bracket map is confirmed.
 
 ### Add player-level features
 1. Extend `teams_2026.csv` with `avg_age`, `key_player_unavailable` (0/1), etc.
